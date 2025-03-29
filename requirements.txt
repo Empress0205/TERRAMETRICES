@@ -10,3 +10,4 @@ flask-mail  # For sending emails
 pyjwt       # For expiring tokens (optional)
 python-dotenv  # For email service credentials
 bcrypt      # For password hashing
+flask_sqlalchemy
