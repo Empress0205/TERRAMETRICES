@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Carbon Footprint Calculator - Terra Metrics{% endblock %}
+
+{% block content %}
+    <div class="calculator-container">
+        <h1>Carbon Footprint Calculator</h1>
+        <p>Calculate your carbon footprint and learn how to reduce it.</p>
+
+        <!-- Category Selection -->
+        <section class="category-selection">
+            <label for="category">Select Category:</label>
+            <select id="category">
+                <option value="personal">Personal</option>
+                <option value="organization">Organization</option>
+                <option value="country">Country/Region</option>
+            </select>
+        </section>
+
+        <!-- Dynamic Input Fields -->
+        <section class="input-fields" id="input-fields">
+            <!-- Fields will be populated dynamically based on category -->
+        </section>
+
+        <!-- Calculate Button -->
+        <button id="calculate-button">Calculate My Footprint</button>
+
+        <!-- Results Section -->
+        <section class="results" id="results">
+            <h2>Your Carbon Footprint</h2>
+            <p>Total Emissions: <span id="total-emissions">0</span> tons CO₂/year</p>
+            <div id="breakdown-chart"></div>
+            <h3>Recommendations</h3>
+            <ul id="recommendations"></ul>
+        </section>
+    </div>
+
+    <!-- Link to JavaScript -->
+    <script src="{{ url_for('static', filename='css/calculator.js') }}"></script>
+{% endblock %}

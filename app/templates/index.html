@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content fade-in">
+        <h1>Welcome to Terra Metrics</h1>
+        <p class="tagline">Empowering a Greener Tomorrow, One Metric at a Time</p>
+        <p class="intro-text">
+            In a world where every action leaves a footprint, understanding our impact is the first step toward change. Terra Metrics is your trusted partner in measuring the carbon dioxide (CO₂) emissions of individuals, organizations, and nations. Through precise calculations and data-driven insights, we provide clear, actionable recommendations to help you reduce your carbon footprint and contribute to a healthier planet.  
+        </p>
+    </div>
+    <div class="hero-image fade-in">
+        <img src="{{ url_for('static', filename='images/image2.jpg') }}" alt="Earth from Space">
+    </div>
+    <div class="hero-cta fade-in">
+        <a href="{{ url_for('category_select') }}" class="cta-button">Calculate Your Footprint Now</a>
+    </div>
+</section>
+
+   <!-- What We Do Section -->
+<section class="what-we-do">
+    <h2 class="fade-in">What We Do</h2>
+    <p class="section-intro fade-in">
+        At Terra Metrics, we provide the tools and insights to help you measure, understand, and reduce your carbon footprint. Our mission is to empower individuals, organizations, and nations to take meaningful action for a sustainable future.  
+    </p>
+    <div class="features">
+        <div class="feature-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-calculator fa-3x"></i>
+            </div>
+            <h3>Calculate Your Impact</h3>
+            <p>
+                Using advanced algorithms and global data sources, we accurately measure your carbon emissions—whether you're an individual, a business, or a government.  
+            </p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-chart-line fa-3x"></i>
+            </div>
+            <h3>Understand Your Footprint</h3>
+            <p>
+                We break down your emissions into actionable insights, helping you identify key areas where you can make the most significant impact.  
+            </p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-seedling fa-3x"></i>
+            <i class="fas fa-hands-helping fa-3x"></i>
+            </div>
+            <h3>Take Action</h3>
+            <p>
+                Receive personalized recommendations to reduce your emissions, from energy-efficient practices to sustainable investments.  
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Why It Matters Section -->
+<section class="why-it-matters">
+    <h2 class="fade-in">Why It Matters</h2>
+    <p class="section-intro fade-in">
+        Climate change is the defining challenge of our time. By understanding and reducing our carbon footprint, we can collectively create a healthier planet for future generations. Here’s why your actions matter:  
+    </p>
+    <div class="stats">
+        <div class="stat-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-user fa-3x"></i>
+            </div>
+            <h3>Individual Impact</h3>
+            <p>
+                The average person emits <strong>4 tons of CO₂ annually</strong>. Small changes in daily habits—like reducing energy use or choosing sustainable transport—can add up to significant reductions.  
+            </p>
+        </div>
+        <div class="stat-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-building fa-3x"></i>
+            </div>
+            <h3>Organizational Responsibility</h3>
+            <p>
+                <strong>70% of global emissions</strong> come from organizations. By adopting sustainable practices, businesses can lead the way in reducing their environmental impact.  
+            </p>
+        </div>
+        <div class="stat-card fade-in">
+            <div class="icon-container">
+                <i class="fas fa-globe fa-3x"></i>
+            </div>
+            <h3>Global Change</h3>
+            <p>
+                When individuals, organizations, and governments work together, we can achieve <strong>massive global impact</strong>. Every action counts in the fight against climate change.  
+            </p>
+        </div>
+    </div>
+</section>
+
+  <!-- Vision Section -->
+<section class="vision">
+    <div class="vision-content fade-in">
+        <h2>Our Vision: A Sustainable Future</h2>
+        <p class="vision-text">
+            At Terra Metrics, we envision a world where every individual, organization, and government uses data to make informed decisions for a sustainable future. By turning insights into action, we can create a healthier planet for generations to come.  
+        </p>
+        <p class="vision-text">
+            Our mission is to empower you with the tools and knowledge to measure, understand, and reduce your carbon footprint. Together, we can build a future where sustainability is not just a goal but a way of life.  
+        </p>
+    </div>
+    <div class="vision-image fade-in">
+        <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Sustainable Future">
+    </div>
+</section>
+
+    <!-- Call-to-Action Section -->
+    <section class="cta">
+        <h2 class="fade-in">Join the Movement</h2>
+        <p class="cta-text fade-in">Start your journey today—because every metric matters.</p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('category_select') }}" class="cta-button fade-in">Individuals</a>
+            <a href="{{ url_for('category_select') }}" class="cta-button fade-in">Organizations</a>
+            <a href="{{ url_for('category_select') }}" class="cta-button fade-in">Regions & Countries</a>
+        </div>
+    </section>
+
+    <!-- JavaScript for Animations -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Fade-in animation on scroll
+        const fadeInElements = document.querySelectorAll('.fade-in');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        fadeInElements.forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+{% endblock %}

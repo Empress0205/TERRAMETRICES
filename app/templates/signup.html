@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraMetrics - Authentication</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 6rem auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            margin-top: 0.5rem;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            background: var(--danger);
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-google {
+            background: white;
+            color: #555;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .btn-google:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .btn-google img {
+            height: 20px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #7f8c8d;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .auth-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="TerraMetrics Logo">
+                <h1>TerraMetrics</h1>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="#" id="auth-link">Sign Up</a> <!-- This will toggle between Login/Signup -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content - This will be dynamically changed between auth pages -->
+    <div class="container">
+        <!-- Login Page Template -->
+        <div class="auth-container" id="login-container">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Log in to calculate your carbon footprint</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn">Log In</button>
+                <button type="button" class="btn btn-google" onclick="window.location.href='{{ url_for('signup_google') }}'">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+                    Continue with Google
+                </button>
+                <div class="auth-footer">
+                    <a href="#" id="forgot-password-link">Forgot password?</a> | 
+                    <span>Don't have an account? <a href="#" id="signup-link">Sign up</a></span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Signup Page Template (hidden by default) -->
+        <div class="auth-container" id="signup-container" style="display: none;">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Join TerraMetrics to track your carbon footprint</p>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" required>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="password-strength-bar"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+              
+                <button type="button" class="btn btn-google" onclick="window.location.href='{{ url_for('signup_google') }}'">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo">
+                    Continue with Google
+                </button>
+                
+                <div class="auth-footer">
+                    Already have an account? <a href="#" id="login-link">Log in</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Forgot Password Page Template (hidden by default) -->
+        <div class="auth-container" id="forgot-container" style="display: none;">
+            <div class="auth-header">
+                <h2>Reset Password</h2>
+                <p>Enter your email to receive a reset link</p>
+            </div>
+            <form id="forgot-form">
+                <div class="form-group">
+                    <label for="forgot-email">Email</label>
+                    <input type="email" id="forgot-email" class="form-control" required>
+                </div>
+                <button type="submit" class="btn">Send Reset Link</button>
+                <div class="auth-footer">
+                    <a href="#" id="back-to-login">Back to Log In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+            </div>
+            <p class="copyright">© 2023 TerraMetrics. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const signupContainer = document.getElementById('signup-container');
+        const forgotContainer = document.getElementById('forgot-container');
+        const authLink = document.getElementById('auth-link');
+        const signupLink = document.getElementById('signup-link');
+        const loginLink = document.getElementById('login-link');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const backToLogin = document.getElementById('back-to-login');
+        const passwordInput = document.getElementById('signup-password');
+        const passwordStrengthBar = document.getElementById('password-strength-bar');
+
+        // Toggle between auth pages
+        function showLogin() {
+            loginContainer.style.display = 'block';
+            signupContainer.style.display = 'none';
+            forgotContainer.style.display = 'none';
+            authLink.textContent = 'Sign Up';
+            authLink.href = '#';
+            authLink.onclick = (e) => {
+                e.preventDefault();
+                showSignup();
+            };
+        }
+
+        function showSignup() {
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'block';
+            forgotContainer.style.display = 'none';
+            authLink.textContent = 'Log In';
+            authLink.href = '#';
+            authLink.onclick = (e) => {
+                e.preventDefault();
+                showLogin();
+            };
+        }
+
+        function showForgotPassword() {
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'none';
+            forgotContainer.style.display = 'block';
+            authLink.textContent = 'Log In';
+            authLink.href = '#';
+            authLink.onclick = (e) => {
+                e.preventDefault();
+                showLogin();
+            };
+        }
+
+        // Event Listeners
+        signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSignup();
+        });
+
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLogin();
+        });
+
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showForgotPassword();
+        });
+
+        backToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLogin();
+        });
+
+        // Password Strength Meter
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+            
+            // Update strength bar
+            const width = (strength / 5) * 100;
+            passwordStrengthBar.style.width = `${width}%`;
+            
+            // Update color
+            if (strength <= 2) {
+                passwordStrengthBar.style.backgroundColor = 'var(--danger)';
+            } else if (strength <= 4) {
+                passwordStrengthBar.style.backgroundColor = '#f39c12';
+            } else {
+                passwordStrengthBar.style.backgroundColor = 'var(--primary)';
+            }
+        });
+
+        // Handle login form submission
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    // Basic validation
+    if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    // In a real app, you would send this to your server
+    // Example using fetch():
+    /*
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/'; // Redirect on success
+        } else {
+            alert(data.message || 'Login failed');
+        }
+    });
+    */
+    
+    // For now, just redirect (remove this in production)
+    window.location.href = '/';
+});
+
+
+    </script>
+</body>
+</html>
