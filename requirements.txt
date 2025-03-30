@@ -12,3 +12,4 @@ python-dotenv  # For email service credentials
 bcrypt      # For password hashing
 flask_sqlalchemy
 flask_login
+flask_bcrypt
