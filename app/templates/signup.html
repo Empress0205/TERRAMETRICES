@@ -209,6 +209,30 @@
             text-decoration: underline;
         }
 
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+        
+        .flash-message {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .flash-error {
+            background-color: #fdecea;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        
+        .flash-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
         /* Footer Styles */
         footer {
             background: var(--dark);
@@ -245,6 +269,15 @@
             opacity: 0.8;
         }
 
+        .is-invalid {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2) !important;
+        }
+        
+        .text-danger {
+            color: var(--danger);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .navbar {
@@ -268,7 +301,7 @@
                 <h1>TerraMetrics</h1>
             </div>
             <div class="nav-links">
-                <a href="/">Home</a>
+                <a href="{{ url_for('home') }}">Home</a>
                 <a href="#" id="auth-link">Sign Up</a> <!-- This will toggle between Login/Signup -->
             </div>
         </nav>
@@ -276,20 +309,32 @@
 
     <!-- Main Content - This will be dynamically changed between auth pages -->
     <div class="container">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         <!-- Login Page Template -->
         <div class="auth-container" id="login-container">
             <div class="auth-header">
                 <h2>Welcome Back</h2>
                 <p>Log in to calculate your carbon footprint</p>
             </div>
-            <form id="login-form">
+            <form id="login-form" method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="login-email">Email</label>
-                    <input type="email" id="login-email" class="form-control" required>
+                    <input type="email" id="login-email" name="email" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" class="form-control" required>
+                    <input type="password" id="login-password" name="password" class="form-control" required>
                 </div>
                 <button type="submit" class="btn">Log In</button>
                 <button type="button" class="btn btn-google" onclick="window.location.href='{{ url_for('signup_google') }}'">
@@ -309,21 +354,22 @@
                 <h2>Create Account</h2>
                 <p>Join TerraMetrics to track your carbon footprint</p>
             </div>
-            <form id="signup-form">
+            <form id="signup-form" method="POST" action="{{ url_for('signup') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" class="form-control" required>
+                    <input type="email" id="signup-email" name="email" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" class="form-control" required>
+                    <input type="password" id="signup-password" name="password" class="form-control" required>
                     <div class="password-strength">
                         <div class="password-strength-bar" id="password-strength-bar"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="signup-confirm-password">Confirm Password</label>
-                    <input type="password" id="signup-confirm-password" class="form-control" required>
+                    <input type="password" id="signup-confirm-password" name="confirm_password" class="form-control" required>
                 </div>
                 <button type="submit" class="btn">Sign Up</button>
               
@@ -344,10 +390,11 @@
                 <h2>Reset Password</h2>
                 <p>Enter your email to receive a reset link</p>
             </div>
-            <form id="forgot-form">
+            <form id="forgot-form" method="POST" action="{{ url_for('forgot_password') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="forgot-email">Email</label>
-                    <input type="email" id="forgot-email" class="form-control" required>
+                    <input type="email" id="forgot-email" name="email" class="form-control" required>
                 </div>
                 <button type="submit" class="btn">Send Reset Link</button>
                 <div class="auth-footer">
@@ -382,6 +429,7 @@
         const backToLogin = document.getElementById('back-to-login');
         const passwordInput = document.getElementById('signup-password');
         const passwordStrengthBar = document.getElementById('password-strength-bar');
+    
 
         // Toggle between auth pages
         function showLogin() {
@@ -441,6 +489,8 @@
             showLogin();
         });
 
+        
+
         // Password Strength Meter
         passwordInput.addEventListener('input', () => {
             const password = passwordInput.value;
@@ -468,44 +518,36 @@
                 passwordStrengthBar.style.backgroundColor = 'var(--primary)';
             }
         });
+        // Password Match Validation
+const confirmPasswordInput = document.getElementById('signup-confirm-password');
+const passwordError = document.createElement('div');
+passwordError.className = 'text-danger mt-1';
+passwordError.style.fontSize = '0.85rem';
+confirmPasswordInput.parentNode.appendChild(passwordError);
 
-        // Handle login form submission
-document.getElementById('login-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    // Basic validation
-    if (!email || !password) {
-        alert('Please fill in all fields');
-        return;
+// Real-time validation
+confirmPasswordInput.addEventListener('input', () => {
+    if (passwordInput.value !== confirmPasswordInput.value) {
+        passwordError.textContent = 'Passwords do not match';
+        confirmPasswordInput.classList.add('is-invalid');
+    } else {
+        passwordError.textContent = '';
+        confirmPasswordInput.classList.remove('is-invalid');
     }
-    
-    // In a real app, you would send this to your server
-    // Example using fetch():
-    /*
-    fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = '/'; // Redirect on success
-        } else {
-            alert(data.message || 'Login failed');
-        }
-    });
-    */
-    
-    // For now, just redirect (remove this in production)
-    window.location.href = '/';
 });
 
+// Form submission validation
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+    if (passwordInput.value !== confirmPasswordInput.value) {
+        e.preventDefault();
+        passwordError.textContent = 'Passwords must match before submitting';
+        confirmPasswordInput.classList.add('is-invalid');
+        confirmPasswordInput.focus();
+    }
+    // Let form submit normally if validation passes
+});
 
+        // Handle form submissions will now be handled by Flask
     </script>
 </body>
 </html>

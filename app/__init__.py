@@ -1,14 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 db =SQLAlchemy()
+csrf = CSRFProtect()
+
 
 app = Flask(__name__)
+csrf.init_app(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/database.db'  # Path to your SQLite database
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app.config.from_object('config.Config')
 
-app.config['SECRET_KEY'] ='your_secret_key_here'
 login_manager=LoginManager()
 
 login_manager.init_app(app)

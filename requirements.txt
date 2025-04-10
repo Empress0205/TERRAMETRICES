@@ -16,4 +16,6 @@ flask_bcrypt
 requests
 google_auth_oauthlib
 git-filter-repo
+flask-wtf
+pip
 
